@@ -7,16 +7,16 @@ import Header from './components/header'
 import Deases from './pages/deases'
 import Home from './pages/home'
 import Heart from './pages/heart'
-
+import Foot from './components/foot'
 function LayOut() {
   return (
     <>
      <Header  />
-     <div className=' '></div>
+     <div className=' pt-16'></div>
      <Outlet/>
-     <div>
+     <div className=' pt-20'></div>
+     <Foot/>
 
-     </div>
     </>
      
   )

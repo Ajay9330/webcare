@@ -10,7 +10,8 @@ function Header() {
 
   return (
     <>
-      <nav className="bg-black fixed w-full">
+      <nav className="bg-black fixed z-20
+       w-full">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4  top-0 w-full">
           <NavLink
             to="/"
@@ -43,8 +44,8 @@ function Header() {
           </button>
           <div
             className={`${
-              isNavOpen ? 'flex h-[100vh]' : 'flex h-[100vh]  w-0 rounded-br-full opacity-0'
-            }  absolute top-16 left-0 w-full md:flex overflow-hidden items-center justify-center transition-all duration-500 ease-in-out bg-slate-400`}
+              isNavOpen ? ' z-1 absolute flex h-[100vh] w-full' : ' h-0 w-0  rounded-br-full opacity-0'
+            }  absolute top-16 left-0  md:flex overflow-hidden items-center justify-center transition-all duration-300 ease-in-out bg-black bg-opacity-75`}
             id="navbar-default"
           >
             <ul className="">
