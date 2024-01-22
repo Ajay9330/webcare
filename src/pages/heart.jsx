@@ -1,36 +1,93 @@
 import React, { useState } from 'react';
 import img from '../assets/doctab.jpg'
+
+
+
+const createBooleanArray = (n, i) => {
+  if (n < 0 || i < 0 || i >= n) {
+    throw new Error('Invalid array size or index');
+  }
+
+  return Array.from({ length: n }, (_, index) => (index === i ? 1 : 0));
+};
+
+// Example usage
+const n = 5;
+const i = 2;
+const booleanArray = createBooleanArray(n, i);
+console.log(booleanArray);
+
 const HeartDiseaseForm = () => {
   const [formData, setFormData] = useState({
-    age: 0,
-    sex: 0,
-    chestPainType: null,
-    BP: 0,
-    cholesterol: 0,
-    FBSOver120: 0,
-    EKGResults: 0,
-    maxHR: 0,
-    exerciseAngina: 0,
-    STDepression: 0,
-    slopeOfST: 0,
-    numVesselsFluro: 0,
-    thallium: 0,
-  });
+    age: undefined,
+    chestPainType: undefined,
+    BP: undefined,
+
+    cholesterol: undefined,
+    FBSOver120: undefined,
+    maxHR: undefined,
+    STDepression: undefined,
+
+    numVesselsFluro: undefined,
+    thallium: undefined,
+    slopeOfST: undefined,
+    sex: undefined,
+    exerciseAngina: undefined,
+    EKGResults: undefined,
+   
+     });
+
+  
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const name = e.target.name;
+    const value = e.target.type === 'number' ? parseFloat(e.target.value) : parseInt(e.target.value) || 0;
+
     setFormData({
       ...formData,
       [name]: value,
     });
   };
 
+  // 'Age', 'Chest pain type', 'BP', 'Cholesterol', 'FBS over 120', 'Max HR',
+  //      'ST depression', 'Number of vessels fluro', 'Thallium', 'Heart Disease',
+  //      'Sex_0', 'Sex_1', 'Exercise angina_0', 'Exercise angina_1',
+  //      'Slope of ST_1', 'Slope of ST_2', 'Slope of ST_3', 'EKG results_0',
+  //      'EKG results_1', 'EKG results_2']
+
+  const datafomatandcount = [
+    { "age": 1 }, { "chestPainType": 1 }, { "BP": 1 }, { "FBSOver120": 1 }, { "maxHR": 1 },
+    { "STDepression": 1 }, { "numVesselsFluro": 1 }, { "thallium": 1 }, { "sex": 2 },
+    { "exerciseAngina": 2 }, { "slopeOfST": 3 },  { "EKGResults": 3 }
+  ];
+  
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
+    console.log(formData);
+    for (const key in formData) {
+      if (formData[key] == null) {
+        alert('Error: ' + key + ' is null');
+        return; // Exit the loop if an error is found
+      }
+    }
+    const formatdata = [];
+    for (const item of datafomatandcount) {
+      for (const key in item) {
+        console.log(formData[key]);
+        if(item[key]!=1){
+          console.log("value:"+createBooleanArray(item[key],formData[key]));
+          formatdata.push(...createBooleanArray(item[key],formData[key]));
+        }else{
+          formatdata.push(formData[key]);
+        }
+      }
+    }
+    
+    console.log(formatdata);
+    // If no error is found, proceed with form submission logic
     console.log('Form data submitted:', formData);
   };
-
+  
   return (
     <div className=" container mx-auto bg-gray-100">
       <div className='bg-blue-400 flex justify-center m-8 p-4 items-center'>
@@ -57,8 +114,8 @@ const HeartDiseaseForm = () => {
             value={formData.sex}
             onChange={handleChange}
             className="w-full p-2 border rounded"
-          >
-            <option value={0}>Male</option>
+          >   <option value="none" selected disabled hidden>Select an Option</option> 
+            <option value={1}>Male</option>
             <option value={0}>Female</option>
           </select>
         </div>
@@ -71,6 +128,7 @@ const HeartDiseaseForm = () => {
             onChange={handleChange}
             className="w-full p-2 border rounded"
           >
+             <option value="none" selected disabled hidden>Select an Option</option> 
             <option value={0}>Typical angina</option>
             <option value={1}>Atypical angina</option>
             <option value={2}>Non-anginal pain</option>
@@ -107,7 +165,7 @@ const HeartDiseaseForm = () => {
             value={formData.FBSOver120}
             onChange={handleChange}
             className="w-full p-2 border rounded"
-          >
+          > <option value="none" selected disabled hidden>Select an Option</option> 
             <option value={0}>No</option>
             <option value={1}>Yes</option>
           </select>
@@ -120,7 +178,7 @@ const HeartDiseaseForm = () => {
             value={formData.EKGResults}
             onChange={handleChange}
             className="w-full p-2 border rounded"
-          >
+          > <option value="none" selected disabled hidden>Select an Option</option> 
             <option value={0}>Nothing to note</option>
             <option value={1}>ST-T Wave abnormality</option>
             <option value={2}>Possible or definite left ventricular hypertrophy</option>
@@ -145,7 +203,7 @@ const HeartDiseaseForm = () => {
             value={formData.exerciseAngina}
             onChange={handleChange}
             className="w-full p-2 border rounded"
-          >
+          > <option value="none" selected disabled hidden>Select an Option</option> 
             <option value={0}>No</option>
             <option value={1}>Yes</option>
           </select>
@@ -169,7 +227,7 @@ const HeartDiseaseForm = () => {
             value={formData.slopeOfST}
             onChange={handleChange}
             className="w-full p-2 border rounded"
-          >
+          > <option value="none" selected disabled hidden>Select an Option</option> 
             <option value={0}>Upsloping</option>
             <option value={1}>Flatsloping</option>
             <option value={2}>Downslopins</option>
@@ -194,11 +252,11 @@ const HeartDiseaseForm = () => {
             value={formData.thallium}
             onChange={handleChange}
             className="w-full p-2 border rounded"
-          >
+          > <option value="none" selected disabled hidden>Select an Option</option> 
             <option value={0}>Normal</option>
-            <option value={1}>Normal</option>
-            <option value="6">Fixed Defect</option>
-            <option value="7">Reversible Defect</option>
+          
+            <option value={1}>Fixed Defect</option>
+            <option value={2}>Reversible Defect</option>
           </select>
         </div>
 
