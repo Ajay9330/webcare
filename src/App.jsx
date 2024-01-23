@@ -14,7 +14,7 @@ function LayOut() {
      <Header  />
      <div className=' pt-16'></div>
      <Outlet/>
-     <div className=' pt-20'></div>
+     <div className=' pt-32'></div>
      <Foot/>
 
     </>

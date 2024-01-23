@@ -20,8 +20,8 @@ const HeartDiseaseForm = () => {
   const [loading, setloading] = useState(false);
   const [modeloutput, setoutput] = useState(null);
   const submitbtn = useRef(null);
-  // const apiurl = 'https://webcareapi.onrender.com/heart';
-  const apiurl="https://reqres.in/api/users";
+  const apiurl = 'https://webcareapi.onrender.com/heart';
+  // const apiurl="https://reqres.in/api/users";
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -74,7 +74,7 @@ const HeartDiseaseForm = () => {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
-        body: JSON.stringify({ data: formatdata }),
+        body: JSON.stringify({ inputs: formatdata }),
       });
 
       console.log('Request Status:', req.status);
@@ -235,7 +235,7 @@ const HeartDiseaseForm = () => {
 
           <button
             type="submit"
-            className="w-15 justify-self-center bg-blue-700 text-white py-2 px-4 rounded hover:bg-gray-950 grid-cols-1 col-span-2"
+            className="w-15 justify-self-center bg-blue-700 text-white py-2 px-4 rounded hover:bg-gray-950 grid-cols-1 md:col-span-2"
             disabled={loading}
           
           >
