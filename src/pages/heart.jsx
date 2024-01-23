@@ -20,7 +20,8 @@ const HeartDiseaseForm = () => {
   const [loading, setloading] = useState(false);
   const [modeloutput, setoutput] = useState(null);
   const submitbtn = useRef(null);
-  const apiurl = 'http://localhost:5000/heart';
+  // const apiurl = 'https://webcareapi.onrender.com/heart';
+  const apiurl="https://reqres.in/api/users";
 
   const handleChange = (e) => {
     const name = e.target.name;
