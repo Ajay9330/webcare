@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import img from '../assets/doctab.jpg';
+import img from '../assets/heart.jpg';
 import { TextField, Select, MenuItem, Button, CircularProgress, FormControl, InputLabel } from '@mui/material';
 import Loader from '../components/loader';
 
@@ -18,7 +18,7 @@ const HeartDiseaseForm = () => {
     EKGResults: undefined,
   });
   const [loading, setloading] = useState(false);
-  const [modeloutput, setoutput] = useState(null);
+  const [modeloutput, setoutput] = useState(-1);
   const submitbtn = useRef(null);
   const apiurl = 'https://webcareapi.onrender.com/heart';
   // const apiurl="https://reqres.in/api/users";
@@ -85,8 +85,8 @@ const HeartDiseaseForm = () => {
       }
 
       const res = await req.json();
-      setoutput(res);
-      alert(res);
+      setoutput(res.value);
+      // alert(res.value);
     } catch (e) {
       console.error('Error:', e.message);
       alert(`Error: ${e.message}`);
@@ -97,15 +97,18 @@ const HeartDiseaseForm = () => {
 
   return (
     <>
-      <div className=" container mx-auto bg-gray-100">
+      <div className=" container mx-auto bg-gray-500">
         {loading && <Loader />}
 
-        <div className="bg-blue-400 flex justify-center m-8 p-4 items-center">
+        {/* <div className="bg-blue-400 flex justify-center m-8 p-4 items-center">
           <h2 className="text-2xl font-semibold mb-4 absolute">Heart Disease Prediction Form</h2>
           <img src={img} alt="" />
-        </div>
-
-        <form onSubmit={handleSubmit} className="grid sm:grid-cols-2 gap-4 mt-8 p-4 ">
+        </div> */}
+        <div className=' justify-center flex sm:m-6 items-center '>
+            <img className='h-64 w-full object-cover' src={img} alt="" />
+            <h1 className='absolute bg-slate-50 bg-opacity-45 md:text-6xl backdrop-blur-[2px]  backd p-6 backdrop-brightness-200 md:m-10 text-center'>Heart Disease Checker</h1>
+          </div >
+        <form onSubmit={handleSubmit} className="grid sm:grid-cols-2 gap-4 bg-blue-100 mt-8 p-4 ">
           <TextField
             className="w-full mb-4"
             label="Age"
@@ -235,7 +238,7 @@ const HeartDiseaseForm = () => {
 
           <button
             type="submit"
-            className="w-15 justify-self-center bg-blue-700 text-white py-2 px-4 rounded hover:bg-gray-950 grid-cols-1 md:col-span-2"
+            className="w-15 justify-self-center bg-blue-700 text-white py-2 px-4 rounded hover:bg-gray-950 grid-cols-1 sm:col-span-2"
             disabled={loading}
           
           >
@@ -244,11 +247,24 @@ const HeartDiseaseForm = () => {
                 Submit <CircularProgress size={20} style={{ marginLeft: '10px' }} />
               </>
             ) : (
-              'Submit'
+              'Check'
             )}
           </button>
         </form>
+     
       </div>
+      <div className={`m-2 sm:m-10 text-center p-3 ${modeloutput === 1 ? "bg-red-400 text-white" : modeloutput === -1 ? "bg-gray-400 text-black" : "bg-green-400"}`}>
+    <span className=" text-xl">
+        {modeloutput === 0
+            ? "No probabilistic chance of heart disease by model, but still check by a doctor"
+            : modeloutput === -1
+                ? "Model output is not available"
+                : "Probabilistic chance of heart disease by model, please still check by a doctor"}
+    </span>
+          <button className='block m-auto bg-blue-300 p-4 rounded-lg w-32 text-black uppercase mt-4 active:bg-blue-400' onClick={()=>setoutput(-1)} >clear</button>
+</div>
+
+
     </>
   );
 };

@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Loader from '../components/loader'
-import img from '../assets/heart.jpg';
+import img from '../assets/doctab.jpg';
 import { FormControl ,Input,InputLabel} from '@mui/material';
+import img2 from '../assets/bgrnd.jpg';
 function Deases() {
-  const apiurl='https://localhost:5500/disaes';
+  const apiurl='https://webcareapi.onrender.com/disease';
   const [loading,setloading]=useState(false);
+  const [modeloutput, setoutput] = useState(-1);
   const [disease,setdisease]=useState([]);
   const [suggest,setsuggest]=useState([]);
   const [currinput,setcurrinput]=useState("");
@@ -51,7 +53,13 @@ function Deases() {
   'inflammatory_nails', 'blister', 'red_sore_around_nose',
   'yellow_crust_ooze', 'prognosis']);
 
+ 
+
+ 
+ 
+ 
   const addinput = (val) => {
+    console.log(disease);
     console.log(remain);
     const ind=remain.indexOf(val);
     console.log(ind);
@@ -65,8 +73,10 @@ function Deases() {
     console.log(remain);
   }
 
+
   const remvoeinput = (index) => {
-    setremain(...remain,disease[index]);
+    // alert(index)
+    setremain([...remain,disease[index]]);
     console.log(remain);
     const newDiseaseList = [...disease];
     newDiseaseList.splice(index, 1);
@@ -78,34 +88,62 @@ function Deases() {
 
   const handlesearchsuggest = (val) => {
     if (val === '' || val === undefined || val === null) {
+      setsuggest([]);
       return;
     }
-    setsuggest([]);
-  }
+  
+    if (val.length > 0) {
+      const matchingSuggestions = remain.filter((symptom) =>
+        symptom.toLowerCase().includes(val.toLowerCase())
+      );
+      setsuggest(matchingSuggestions);
+    } else {
+      setsuggest([]);
+    }
+  };
+  
+  useEffect(() => {
+    handlesearchsuggest(currinput);
+  }, [currinput]);
+  
+  useEffect(() => {
+    console.log(suggest);
+  }, [suggest]);
+  
 
   const handleSubmit = async () => {
+    // alert("hi")
     setloading(true);
-    if (disease.length < 4) {
+    if (disease.length < 3) {
       alert("Add more than three diseases");
       setloading(false);
       return;
     }
 
-    const newDiseaseList = [...disease];
-    for (let i = 0; i < newDiseaseList.length; i++) {
-      newDiseaseList.push("");
+    var newDiseaseList = [...disease];
+    for (let i = 0; i < 17-disease.length; i++) {
+      newDiseaseList.push('');
     }
-    
+    console.log(disease);
+    // return;
     try {
       const req = await fetch(apiurl, {
         method: "post",
         headers: {
-          'content-type': 'json'
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
         },
-        body: JSON.stringify({ data: newDiseaseList }),
+        body: JSON.stringify({ inputs: newDiseaseList }),
       });
 
-      // Handle the response...
+      if(req.ok){
+        const d=await req.json();
+        setoutput(d.disease);
+        // alert(JSON.stringify(d));
+        // alert(d.disease);
+        // alert(d);
+        
+      }
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -115,23 +153,30 @@ function Deases() {
 
 
   return (<>
-
-        <div>
-          <div className=' justify-center flex m-6 items-center '>
-            <img className='h-64 w-full' src={img} alt="" />
-            <h1 className='absolute bg-slate-50 bg-opacity-45 md:text-6xl backdrop-blur-[2px]  backd p-6 backdrop-brightness-200 md:m-10 text-center'>We Predict the disaes based on the symtoms</h1>
+{loading && <Loader/>}
+        <div >
+          <div className=' justify-center flex sm:p-6 items-center bg-gray-300'>
+            <img className='h-64 w-full object-cover' src={img} alt="" />
+            <h1 className='absolute bg-slate-50 bg-opacity-45 md:text-6xl backdrop-blur-[2px]  backd p-6 backdrop-brightness-200 md:m-10 text-center'>I'll Predict the Disease based on the symtoms</h1>
           </div >
-          <section className=' md:m-14  '>
-            <div className='justify-center items-center flex  bg-blue-300 m-5  p-12 flex-wrap'>
-            <FormControl className='flex-row '>
+          <section className=' md:m-14   '>
+            <div className='justify-center items-center flex border-2 border-black rounded-lg border-opacity-30 bg-blue-100 m-5 mt-0 p-1 sm:p-12 flex-wrap'>
+            <FormControl fullWidth className='flex-row '>
             <InputLabel   htmlFor="my-input border-4">Add Symtoms</InputLabel>
             <Input className=' border-4 bg-slate-200 outline-4' id="my-input"value={currinput} onChange={(e)=>setcurrinput(e.target.value)} aria-describedby="my-helper-text" />
-      
+            <div className='w-full bg-white flex-wrap  justify-center flex'>
+                {
+                    suggest.map(sym => <div onClick={() => {addinput(sym);setsuggest([])} } className=' break-al justify-around  border-2 rounded-md py-1 px-1 m-2 cursor-pointer  border-blue-500 bg-blue-200 flex items-center' ><span className='border-2 rounded-md px-2 cursor-pointer break-words'>{sym}</span><span class="material-symbols-outlined ">
+                    add_circle
+                    </span> </div>)
+                }
+            </div>
           </FormControl>
-          <button className='m-4 bg-red-100 p-2 rounded-xl transition-all active:bg-blue-500 active:text-white w-20' onClick={()=>addinput(currinput)}>Add</button>
+         
+          <button className='m-4 bg-red-100 p-2 rounded-xl transition-all active:bg-blue-500 active:text-white w-20' onClick={()=>handleSubmit()}>Check</button>
           </div>
           <div className='mx-10 flex flex-wrap justify-evenly'>
-{(disease.length<3)&&<> <p className='text-red-500'>"Please add atleast 3 symtoms"</p> <p className='text-green-500'>you can add still {17-disease.length} symtoms</p> </>}
+{(disease.length<3)&&<p className='text-red-500'>"Please add atleast 3 symtoms"</p> }<p className='text-green-500'>you can add still {17-disease.length} symtoms</p> 
           </div>
           <fieldset  className=' bg-gray-300 border-2 bg-opacity-65 border-orange-300'>
             <legend className='text-center'>Your selected Diseases</legend>
@@ -148,7 +193,16 @@ close
           </fieldset>
           </section>
         
-         
+          <div className={`m-2 sm:m-10 text-center p-3 ${modeloutput === 0 ? "bg-red-400" : modeloutput === -1 ? "bg-gray-400 text-black" : "bg-green-400 text-blue-800"}`}>
+    <span className=" text-xl">
+        {modeloutput != -1
+            ? modeloutput
+            :
+               "Model output is not available"
+             }
+    </span>
+          <button className='block m-auto bg-blue-300 p-4 rounded-lg w-32 text-black uppercase mt-4 active:bg-blue-400' onClick={()=>setoutput(-1)} >clear</button>
+</div>
         </div>
     
   </>

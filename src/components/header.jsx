@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 function Header() {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
+  useEffect(() => {
+
+    const body = document.body;
+    body.style.overflow = isNavOpen ? 'hidden' : 'auto';
+
+ 
+    return () => {
+      body.style.overflow = 'auto';
+    };
+  }, [isNavOpen]);
   const toggleNav = () => {
     setIsNavOpen(!isNavOpen);
   };
