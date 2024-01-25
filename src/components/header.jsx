@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-
+import l from '../assets/logo2.jpg'
 function Header() {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
@@ -29,6 +29,7 @@ function Header() {
           >
             {/* Include your logo or text here */}
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+             <img  className=" rounded-full z-50 mr-2 h-12 inline-flex" src={l} alt="" />
               Webcare
             </span>
           </NavLink>
